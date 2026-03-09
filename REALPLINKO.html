@@ -9,11 +9,50 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
         }
         h1 {
             color: pink;
         }
-        /* Additional styles omitted for brevity */
+        #plinko-board {
+            background-color: #1a1a1a;
+            border: 3px solid #333;
+            border-radius: 8px;
+            margin: 20px 0;
+            padding: 10px;
+            position: relative;
+        }
+        .multiplier-zone {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .multiplier-slot {
+            flex: 1;
+            padding: 15px;
+            background-color: #333;
+            border: 2px solid #555;
+            border-radius: 5px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .multiplier-slot.center-biased {
+            background-color: #0066cc;
+            border-color: #0099ff;
+            box-shadow: 0 0 10px rgba(0, 153, 255, 0.5);
+        }
+        .multiplier-value {
+            font-size: 20px;
+            color: #ffff00;
+        }
     </style>
 </head>
 <body>
@@ -25,11 +64,53 @@
         <div id="plinko-board">
             <!-- Plinko board implementation -->
         </div>
+        
+        <!-- Multiplier Zone at the bottom -->
+        <div class="multiplier-zone" id="multiplier-zone">
+            <!-- Multiplier slots will be generated here -->
+        </div>
+        
         <script>
             // JavaScript for the Plinko game
 
             // Locking the risk to low only
             const riskLevel = 'low';
+
+            // Center-biased multiplier configuration
+            const multipliers = [
+                { value: 1.0, label: '1.0x' },
+                { value: 1.5, label: '1.5x' },
+                { value: 2.0, label: '2.0x' },
+                { value: 0.3, label: '0.3x', centerBiased: true }, // Center biased
+                { value: 2.0, label: '2.0x' },
+                { value: 1.5, label: '1.5x' },
+                { value: 1.0, label: '1.0x' }
+            ];
+
+            // Initialize the multiplier zone
+            function initializeMultipliers() {
+                const zone = document.getElementById('multiplier-zone');
+                multipliers.forEach((mult, index) => {
+                    const slot = document.createElement('div');
+                    slot.className = 'multiplier-slot';
+                    if (mult.centerBiased) {
+                        slot.classList.add('center-biased');
+                    }
+                    slot.innerHTML = `<span class="multiplier-value">${mult.label}</span>`;
+                    slot.id = `multiplier-${index}`;
+                    zone.appendChild(slot);
+                });
+            }
+
+            // Apply multiplier when ball lands
+            function applyMultiplier(slotIndex) {
+                const multiplier = multipliers[slotIndex];
+                console.log(`Ball landed on ${multiplier.label} multiplier`);
+                return multiplier.value;
+            }
+
+            // Initialize on page load
+            document.addEventListener('DOMContentLoaded', initializeMultipliers);
 
             // Rest of the game logic
         </script>
